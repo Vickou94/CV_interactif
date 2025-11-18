@@ -3,6 +3,10 @@ const config = {
   width: 800,
   height: 600,
   parent: 'game',
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
   physics: {
     default: 'arcade',
     arcade: {
@@ -10,12 +14,9 @@ const config = {
       debug: false,
     },
   },
-  scene: {
-    preload: preload,
-    create: create,
-    update: update,
-  },
+  scene: { preload, create, update },
 };
+
 
 const game = new Phaser.Game(config);
 
@@ -39,6 +40,10 @@ function preload() {
   this.load.image('hitReaction', 'assets/hitReaction.png');
   this.load.audio('hitsound', 'assets/hitsound.mp3');
   this.load.audio('bgm', 'assets/bgm.mp3');
+  this.load.image('btnLeft', 'assets/btnLeft.png');
+  this.load.image('btnRight', 'assets/btnRight.png');
+  this.load.image('btnJump', 'assets/btnJump.png');
+
 }
 
 function create() {
@@ -229,57 +234,104 @@ shadow: {
 .setScrollFactor(0)
 .setDepth(2);
 
+// Détection mobile
+this.isMobile = this.sys.game.device.os.android || this.sys.game.device.os.iOS;
+
+if (this.isMobile) {
+  this.touchState = { left: false, right: false, jump: false };
+
+  const W = this.scale.width;
+  const H = this.scale.height;
+
+  this.btnLeft = this.add.image(600, H - 80, "btnLeft")
+      .setScrollFactor(0)
+      .setScale(0.1)
+      .setInteractive()
+      .setDepth(10);
+
+  this.btnLeft.on("pointerdown", () => this.touchState.left = true);
+  this.btnLeft.on("pointerup", () => this.touchState.left = false);
+  this.btnLeft.on("pointerout", () => this.touchState.left = false);
+
+  this.btnRight = this.add.image(700, H - 80, "btnRight")
+      .setScrollFactor(0)
+      .setScale(0.1)
+      .setInteractive()
+      .setDepth(10);
+
+  this.btnRight.on("pointerdown", () => this.touchState.right = true);
+  this.btnRight.on("pointerup", () => this.touchState.right = false);
+  this.btnRight.on("pointerout", () => this.touchState.right = false);
+
+  this.btnJump = this.add.image(W - 150, H - 120, "btnJump")
+      .setScrollFactor(0)
+      .setScale(0.1)
+      .setInteractive()
+      .setDepth(10);
+
+  this.btnJump.on("pointerdown", () => this.touchState.jump = true);
+  this.btnJump.on("pointerup", () => this.touchState.jump = false);
+  this.btnJump.on("pointerout", () => this.touchState.jump = false);
+}
+
+
 }
 
 function update() {
 
-    if (isReacting) {
-      player.setVelocityX(0);
-      return; // Ignore les contrôles pendant la réaction
-    }
-  
-  // Gauche
-  if (cursors.left.isDown) {
+  if (isReacting) {
+    player.setVelocityX(0);
+    return;
+  }
+
+
+  // Inputs par défaut : clavier
+  let left = cursors.left.isDown;
+  let right = cursors.right.isDown;
+  let jump = cursors.up.isDown;
+
+
+if (this.isMobile && this.touchState) {
+  left  = this.touchState.left;
+  right = this.touchState.right;
+  jump  = this.touchState.jump;
+}
+
+
+  // --- Déplacements ---
+  if (left) {
     player.setVelocityX(-160);
     player.setSize(player.width, 235);
-    player.anims.play('walk', true);
+    player.anims.play("walk", true);
     player.setFlipX(true);
   }
-  // Droite
-  else if (cursors.right.isDown) {
+  else if (right) {
     player.setVelocityX(160);
     player.setSize(player.width, 235);
-    player.anims.play('walk', true);
+    player.anims.play("walk", true);
     player.setFlipX(false);
   }
-  // Ne bouge pas horizontalement
   else {
     player.setVelocityX(0);
     player.setSize(player.width, 210);
-    // Lorsque le joueur est immobile et touche le sol, on joue l'animation "debout"
     if (player.body.touching.down) {
-      player.anims.play('standing', true);  // Animation "debout"
+      player.anims.play("standing", true);
     }
   }
 
-  // Saut (uniquement si le joueur touche le sol)
-  if (cursors.up.isDown && player.body.touching.down) {
-    player.setVelocityY(-400); // Force du saut
-    player.anims.play('jump', true);  // Lancer l'animation de saut
+  // --- Saut ---
+  if (jump && player.body.touching.down) {
+    player.setVelocityY(-400);
+    player.anims.play("jump", true);
   }
 
-  // Si le joueur est en l'air, il doit passer à l'animation de chute
+  // Animation de chute
   if (player.body.velocity.y > 0 && !player.body.touching.down) {
-    player.anims.play('jumpFall', true); // Lancer l'animation de chute
+    player.anims.play("jumpFall", true);
   }
 
-  // Lorsque le joueur touche le sol, on arrête l'animation de saut ou de chute et on recommence l'animation de marche ou debout
-
-    if (cursors.left.isDown || cursors.right.isDown) {
-      player.anims.play('walk', true); // Animation de marche si on bouge
-    }
-  
 }
+
 
 let textInterval = null; // Variable globale pour stocker l'intervalle
 
