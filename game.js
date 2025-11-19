@@ -53,7 +53,7 @@ function create() {
   bg.setDisplaySize(this.cameras.main.width, this.cameras.main.height);
 
   const bgm = this.sound.add('bgm', {
-    volume: 0.3,   // volume plus discret
+    volume: 0.3,   // volume
     loop: true      // pour répéter en boucle
   });
   bgm.play();
@@ -68,7 +68,7 @@ function create() {
   // Fixer la hitbox quand le body existe
 this.time.delayedCall(0, () => {
   player.body.setSize(120, 230);   // largeur, hauteur
-  player.body.setOffset(40, 20);   // décalage horizontal, vertical
+  player.body.setOffset(40, -15);   // décalage horizontal, vertical
 });
 
 
@@ -298,6 +298,7 @@ const jump = this.jumpPressed;
 // Déplacement à gauche
 if (cursors.left.isDown || moveLeft) {
   player.setVelocityX(-160);
+  player.body.setOffset(40, 7);   // décalage pour aligner les pieds
   player.setFlipX(true);
   if (player.anims.currentAnim?.key !== 'walk') {
       player.anims.play('walk', true);
@@ -306,6 +307,7 @@ if (cursors.left.isDown || moveLeft) {
 // Déplacement à droite
 else if (cursors.right.isDown || moveRight) {
   player.setVelocityX(160);
+  player.body.setOffset(40, 7);   // décalage pour aligner les pieds
   player.setFlipX(false);
   if (player.anims.currentAnim?.key !== 'walk') {
       player.anims.play('walk', true);
@@ -314,6 +316,7 @@ else if (cursors.right.isDown || moveRight) {
 // Immobile
 else {
   player.setVelocityX(0);
+  player.body.setOffset(40, -15);
   if (player.body.blocked.down) {
       if (player.anims.currentAnim?.key !== 'standing') {
           player.anims.play('standing', true);
