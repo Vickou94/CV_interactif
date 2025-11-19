@@ -65,8 +65,11 @@ function create() {
   player.setBounce(0.2);
   player.setCollideWorldBounds(true);
 
-  player.setSize(90, 210);   // largeur, hauteur hitbox
-  player.setOffset(52, 0);  // ajuste la hitbox sur le sprite (à adapter si besoin)
+  // Fixer la hitbox quand le body existe
+this.time.delayedCall(0, () => {
+  player.body.setSize(120, 230);   // largeur, hauteur
+  player.body.setOffset(40, 20);   // décalage horizontal, vertical
+});
 
 
   // Animation de marche
@@ -110,6 +113,7 @@ function create() {
     frameRate: 1,
     repeat: -1 // Répète cette animation indéfiniment quand le joueur est immobile
   });
+
 
   // Sol invisible
   const ground = this.physics.add.staticGroup();
@@ -293,33 +297,33 @@ const jump = this.jumpPressed;
   
 // Déplacement à gauche
 if (cursors.left.isDown || moveLeft) {
-  player.setVelocityX(-160);
-  player.anims.play('walk', true);
-  player.setFlipX(true);
+    player.setVelocityX(-160);
+    player.anims.play('walk', true);
+    player.setFlipX(true);
 }
 // Déplacement à droite
 else if (cursors.right.isDown || moveRight) {
-  player.setVelocityX(160);
-  player.anims.play('walk', true);
-  player.setFlipX(false);
+    player.setVelocityX(160);
+    player.anims.play('walk', true);
+    player.setFlipX(false);
 }
 // Immobile
 else {
-  player.setVelocityX(0);
-  if (player.body.touching.down) {
-      player.anims.play('standing', true);
-  }
+    player.setVelocityX(0);
+    if (player.body.blocked.down) {
+        player.anims.play('standing', true);
+    }
 }
 
 // Saut
-if ((cursors.up.isDown || jump) && player.body.touching.down) {
-  player.setVelocityY(-400);
-  player.anims.play('jump', true);
+if ((cursors.up.isDown || jump) && player.body.blocked.down) {
+    player.setVelocityY(-400);
+    player.anims.play('jump', true);
 }
 
 
   // Si le joueur est en l'air, il doit passer à l'animation de chute
-  if (player.body.velocity.y > 0 && !player.body.touching.down) {
+  if (player.body.velocity.y > 0 && !player.body.blocked.down) {
     player.anims.play('jumpFall', true); // Lancer l'animation de chute
   }
 
@@ -379,10 +383,9 @@ function showInfo(player, block) {
 
     player.scene.sound.play('hitsound');
     player.setTexture('hitReaction');
-    player.setSize(150, 235);
 
     setTimeout(() => {
-      if (player.body.touching.down) {
+      if (player.body.blocked.down) {
         player.anims.play('standing', true);
       }
       isReacting = false;
