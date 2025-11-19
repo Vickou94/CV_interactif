@@ -115,10 +115,7 @@ this.time.delayedCall(0, () => {
   });
 
 
-  // Sol invisible
-  const ground = this.physics.add.staticGroup();
-  ground.create(400, 580, 'ground').setScale(50, 1).refreshBody(); // long sol invisible
-  this.physics.add.collider(player, ground); // collision joueur-sol
+
 
   // Créer les blocs
   blocks = this.physics.add.staticGroup();
@@ -187,8 +184,8 @@ this.time.delayedCall(0, () => {
   '🇪🇸 Espagne – Vigo — 2 mois (Stage)'
 ];
 
-  [300, 400, 500].forEach((x, i) => {
-    const block = blocks.create(x, 350, 'block');
+  [200, 400, 600].forEach((x, i) => {
+    const block = blocks.create(x, 400, 'block');
     block.info = messages[i];
   });
 
@@ -245,19 +242,19 @@ shadow: {
 .setDepth(2);
 
 // === Boutons tactiles ===
-this.leftButton = this.add.image(600, this.cameras.main.height - 80, 'btnLeft')
+this.leftButton = this.add.image(600, this.cameras.main.height - 350, 'btnLeft')
     .setScrollFactor(0)
     .setScale(0.1)
     .setInteractive()
     .setAlpha(0.8);
 
-this.rightButton = this.add.image(700, this.cameras.main.height - 80, 'btnRight')
+this.rightButton = this.add.image(700, this.cameras.main.height - 350, 'btnRight')
     .setScrollFactor(0)
     .setScale(0.1)
     .setInteractive()
     .setAlpha(0.8);
 
-this.jumpButton = this.add.image(this.cameras.main.width - 150, this.cameras.main.height - 120, 'btnJump')
+this.jumpButton = this.add.image(this.cameras.main.width - 150, this.cameras.main.height - 400, 'btnJump')
     .setScrollFactor(0)
     .setScale(0.1)
     .setInteractive()
