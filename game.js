@@ -242,17 +242,17 @@ shadow: {
 .setDepth(2);
 
 // Cercle pour le bouton gauche
-this.add.circle(600, this.cameras.main.height - 350, 30, 0x000000, 0.5)
+this.add.circle(600, this.cameras.main.height - 350, 30, 0x00ff00, 0.5)
     .setScrollFactor(0)
     .setDepth(0); // derrière le bouton
 
 // Cercle pour le bouton droit
-this.add.circle(700, this.cameras.main.height - 350, 30, 0x000000, 0.5)
+this.add.circle(700, this.cameras.main.height - 350, 30, 0x00ff00, 0.5)
     .setScrollFactor(0)
     .setDepth(0);
 
 // Cercle pour le bouton jump
-this.add.circle(this.cameras.main.width - 150, this.cameras.main.height - 400, 30, 0x000000, 0.5)
+this.add.circle(this.cameras.main.width - 150, this.cameras.main.height - 400, 30, 0x00ff00, 0.5)
     .setScrollFactor(0)
     .setDepth(0);
 
