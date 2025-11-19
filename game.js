@@ -65,6 +65,10 @@ function create() {
   player.setBounce(0.2);
   player.setCollideWorldBounds(true);
 
+  player.setSize(90, 210);   // largeur, hauteur hitbox
+  player.setOffset(52, 0);  // ajuste la hitbox sur le sprite (à adapter si besoin)
+
+
   // Animation de marche
   this.anims.create({
     key: 'walk',
@@ -290,21 +294,18 @@ const jump = this.jumpPressed;
 // Déplacement à gauche
 if (cursors.left.isDown || moveLeft) {
   player.setVelocityX(-160);
-  player.setSize(player.width, 235);
   player.anims.play('walk', true);
   player.setFlipX(true);
 }
 // Déplacement à droite
 else if (cursors.right.isDown || moveRight) {
   player.setVelocityX(160);
-  player.setSize(player.width, 235);
   player.anims.play('walk', true);
   player.setFlipX(false);
 }
 // Immobile
 else {
   player.setVelocityX(0);
-  player.setSize(player.width, 210);
   if (player.body.touching.down) {
       player.anims.play('standing', true);
   }
