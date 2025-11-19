@@ -297,23 +297,30 @@ const jump = this.jumpPressed;
   
 // Déplacement à gauche
 if (cursors.left.isDown || moveLeft) {
-    player.setVelocityX(-160);
-    player.anims.play('walk', true);
-    player.setFlipX(true);
+  player.setVelocityX(-160);
+  player.setFlipX(true);
+  if (player.anims.currentAnim?.key !== 'walk') {
+      player.anims.play('walk', true);
+  }
 }
 // Déplacement à droite
 else if (cursors.right.isDown || moveRight) {
-    player.setVelocityX(160);
-    player.anims.play('walk', true);
-    player.setFlipX(false);
+  player.setVelocityX(160);
+  player.setFlipX(false);
+  if (player.anims.currentAnim?.key !== 'walk') {
+      player.anims.play('walk', true);
+  }
 }
 // Immobile
 else {
-    player.setVelocityX(0);
-    if (player.body.blocked.down) {
-        player.anims.play('standing', true);
-    }
+  player.setVelocityX(0);
+  if (player.body.blocked.down) {
+      if (player.anims.currentAnim?.key !== 'standing') {
+          player.anims.play('standing', true);
+      }
+  }
 }
+
 
 // Saut
 if ((cursors.up.isDown || jump) && player.body.blocked.down) {
@@ -329,7 +336,7 @@ if ((cursors.up.isDown || jump) && player.body.blocked.down) {
 
   // Lorsque le joueur touche le sol, on arrête l'animation de saut ou de chute et on recommence l'animation de marche ou debout
 
-    if (cursors.left.isDown || cursors.right.isDown) {
+    if (cursors.left.isDown || cursors.right.isDown || moveRight || moveLeft) {
       player.anims.play('walk', true); // Animation de marche si on bouge
     }
   
